@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: code-review-server
+  ai:
+    vertex:
+      ai:
+        gemini:
+          project-id: europe-north1
+          location: europe-north1
+          chat:
+            options:
+              model: gemini-1.5-pro-001
+  quartz:
+    job-store-type: memory
+
+bitbucket:
+  baseUrl: http://localhost:7990/rest/api/1.0
+#  token:
+#  certificatePath: path
+#  certificatePassword: your-password
+  project: SWTR
+  repository: swtr-core
+
+logging:
+  level:
+    dev.gordeev.server: DEBUG
+
+git:
+  work-directory: tmp/git
+
