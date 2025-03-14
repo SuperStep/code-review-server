@@ -35,6 +35,9 @@ jobs:
           
           # Verify the change
           grep "version = " build.gradle.kts
+          
+          # Set version as output
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -67,3 +70,35 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           ./gradlew bootBuildImage --publishImage
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ env.VERSION }}
+          body: |
+            ## Code Review Server Release ${{ env.VERSION }}
+            
+            ### Docker Image
+            ```
+            docker pull ${{ secrets.DOCKER_USERNAME }}/code-review-server:${{ env.VERSION }}
+            ```
+            
+            Docker Hub URL: https://hub.docker.com/r/${{ secrets.DOCKER_USERNAME }}/code-review-server/tags
+            
+            ### Usage
+            ```bash
+            docker run -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/code-review-server:${{ env.VERSION }}
+            ```
+            
+            ### Configuration
+            Configure the application using environment variables:
+            - `BITBUCKET_BASE_URL`: Your Bitbucket server URL
+            - `BITBUCKET_TOKEN`: Your Bitbucket access token
+            - `BITBUCKET_PROJECT`: Your Bitbucket project key
+            - `BITBUCKET_REPOSITORY`: Your Bitbucket repository name
+            - `GEMINI_TOKEN`: Your Google Gemini API token
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
