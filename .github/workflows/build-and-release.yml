@@ -58,7 +58,7 @@ jobs:
         run: ./gradlew bootJar
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: code-review-server
           path: build/libs/*.jar
@@ -89,7 +89,7 @@ jobs:
 
     steps:
       - name: Download build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: code-review-server
           path: artifacts
