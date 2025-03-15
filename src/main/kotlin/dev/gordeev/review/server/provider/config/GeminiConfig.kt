@@ -7,4 +7,5 @@ import org.springframework.context.annotation.Configuration
 @ConfigurationProperties("gemini")
 class GeminiConfig {
     lateinit var token: String
+    lateinit var model: String
 }
