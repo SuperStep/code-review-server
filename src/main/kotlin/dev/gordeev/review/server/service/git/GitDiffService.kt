@@ -1,4 +1,4 @@
-package dev.gordeev.review.server.service
+package dev.gordeev.review.server.service.git
 
 interface GitDiffService {
     /**

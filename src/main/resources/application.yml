@@ -4,6 +4,7 @@ spring:
   quartz:
     job-store-type: memory
 
+# Job Configuration
 app:
   jobs:
     pull-request-fetch:
@@ -27,7 +28,7 @@ ollama:
   temperature: 0.7
   maxTokens: 4096
 
-
+# Bitbucket Configuration
 bitbucket:
   baseUrl: http://localhost:7990/rest/api/1.0
 #  token:
@@ -40,6 +41,7 @@ logging:
   level:
     dev.gordeev.server: DEBUG
 
+# Git diff configuration
 git:
   work-directory: tmp/git
 

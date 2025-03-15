@@ -1,6 +1,7 @@
 package dev.gordeev.review.server.service
 
 import dev.gordeev.review.server.model.PullRequest
+import dev.gordeev.review.server.service.git.GitDiffService
 import gordeev.dev.aicodereview.provider.AiReviewProvider
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service

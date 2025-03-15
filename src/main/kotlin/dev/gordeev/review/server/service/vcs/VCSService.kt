@@ -1,6 +1,5 @@
-package dev.gordeev.review.server.service
+package dev.gordeev.review.server.service.vcs
 
-import dev.gordeev.review.server.model.PullRequest
 import dev.gordeev.review.server.model.PullRequestPage
 
 /**

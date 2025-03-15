@@ -1,8 +1,9 @@
-package dev.gordeev.review.server.service
+package dev.gordeev.review.server.service.vcs.impl
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.gordeev.review.server.config.BitbucketProperties
 import dev.gordeev.review.server.model.PullRequestPage
+import dev.gordeev.review.server.service.vcs.VCSService
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody

@@ -1,10 +1,10 @@
-package dev.gordeev.review.server.service
+package dev.gordeev.review.server.service.queue
 
 import dev.gordeev.review.server.model.PullRequest
-import dev.gordeev.review.server.model.PullRequestToReview
 import dev.gordeev.review.server.model.ReviewResult
 import dev.gordeev.review.server.queue.InMemoryReviewQueue
 import dev.gordeev.review.server.queue.ReviewQueue
+import dev.gordeev.review.server.service.vcs.VCSService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 

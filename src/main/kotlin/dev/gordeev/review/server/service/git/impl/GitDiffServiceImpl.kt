@@ -1,7 +1,7 @@
-package dev.gordeev.review.server.service.impl
+package dev.gordeev.review.server.service.git.impl
 
 import dev.gordeev.review.server.config.GitConfig
-import dev.gordeev.review.server.service.GitDiffService
+import dev.gordeev.review.server.service.git.GitDiffService
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.diff.DiffFormatter
 import org.eclipse.jgit.lib.Repository
@@ -10,7 +10,6 @@ import org.eclipse.jgit.transport.RefSpec
 import org.springframework.stereotype.Service
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.nio.file.Files
 import java.util.UUID
 
 @Service
