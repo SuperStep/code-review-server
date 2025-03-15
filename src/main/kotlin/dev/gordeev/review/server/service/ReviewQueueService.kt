@@ -19,7 +19,19 @@ class ReviewQueueService(
     
     fun enqueuePullRequestForReview(pullRequest: PullRequest) {
         pullRequestQueue.enqueue(pullRequest)
-        logger.info("Added PR #${pullRequest.id} to queue")
+        // Log current PR queue entries in beautiful format
+        val queueEntries = pullRequestQueue.getAll()
+        logger.info("Current Pull Request Queue (${queueEntries.size} items):")
+        if (queueEntries.isEmpty()) {
+            logger.info("  Queue is empty")
+        } else {
+            queueEntries.forEachIndexed { index, pr ->
+                logger.info("  ${index + 1}. PR #${pr.id}: ${pr.title} by ${pr.author}")
+                logger.info("     Branch: ${pr.fromRef.displayId} → ${pr.toRef.displayId}")
+                logger.info("     Created: ${pr.createdDate}")
+                logger.info("     Updated: ${pr.updatedDate}")
+            }
+        }
     }
 
     fun genNextToReview(): PullRequest? {

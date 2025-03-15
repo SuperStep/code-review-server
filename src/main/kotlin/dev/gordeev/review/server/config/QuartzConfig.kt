@@ -4,11 +4,12 @@ import dev.gordeev.review.server.job.PullRequestFetchJob
 import dev.gordeev.review.server.job.ReviewProcessJob
 import dev.gordeev.review.server.job.ReviewResultProcessJob
 import org.quartz.*
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class QuartzConfig {
+class QuartzConfig(private val jobProperties: JobProperties) {
 
     @Bean
     fun pullRequestFetchJobDetail(): JobDetail {
@@ -19,13 +20,14 @@ class QuartzConfig {
     }
 
     @Bean
+    @ConditionalOnProperty(name = ["app.jobs.pull-request-fetch.enabled"], havingValue = "true", matchIfMissing = true)
     fun pullRequestFetchTrigger(pullRequestFetchJobDetail: JobDetail): Trigger {
         return TriggerBuilder.newTrigger()
             .forJob(pullRequestFetchJobDetail)
             .withIdentity("pullRequestFetchTrigger")
             .withSchedule(
                 SimpleScheduleBuilder.simpleSchedule()
-                    .withIntervalInSeconds(1)
+                    .withIntervalInSeconds(jobProperties.pullRequestFetch.intervalInSeconds)
                     .repeatForever()
             )
             .build()
@@ -40,13 +42,14 @@ class QuartzConfig {
     }
 
     @Bean
+    @ConditionalOnProperty(name = ["app.jobs.review-process.enabled"], havingValue = "true", matchIfMissing = true)
     fun reviewProcessTrigger(reviewProcessJobDetail: JobDetail): Trigger {
         return TriggerBuilder.newTrigger()
             .forJob(reviewProcessJobDetail)
             .withIdentity("reviewProcessTrigger")
             .withSchedule(
                 SimpleScheduleBuilder.simpleSchedule()
-                    .withIntervalInSeconds(1)
+                    .withIntervalInSeconds(jobProperties.reviewProcess.intervalInSeconds)
                     .repeatForever()
             )
             .build()
@@ -61,13 +64,14 @@ class QuartzConfig {
     }
 
     @Bean
+    @ConditionalOnProperty(name = ["app.jobs.review-result-process.enabled"], havingValue = "true", matchIfMissing = true)
     fun reviewResultProcessTrigger(reviewResultProcessJobDetail: JobDetail): Trigger {
         return TriggerBuilder.newTrigger()
             .forJob(reviewResultProcessJobDetail)
             .withIdentity("reviewResultProcessTrigger")
             .withSchedule(
                 SimpleScheduleBuilder.simpleSchedule()
-                    .withIntervalInSeconds(1)
+                    .withIntervalInSeconds(jobProperties.reviewResultProcess.intervalInSeconds)
                     .repeatForever()
             )
             .build()

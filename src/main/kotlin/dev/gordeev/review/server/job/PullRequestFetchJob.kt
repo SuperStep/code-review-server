@@ -1,6 +1,5 @@
 package dev.gordeev.review.server.job
 
-import dev.gordeev.review.server.model.PullRequestToReview
 import dev.gordeev.review.server.service.ReviewQueueService
 import dev.gordeev.review.server.service.VCSService
 import org.quartz.Job
@@ -17,9 +16,9 @@ class PullRequestFetchJob(
     private var currentPage = 0
     private val pageSize = 10
 
-
     override fun execute(context: JobExecutionContext) {
         logger.info("Fetching pull requests page $currentPage")
+
         fetchPullRequestsPage(currentPage * pageSize)
         currentPage++
 
@@ -33,11 +32,10 @@ class PullRequestFetchJob(
 
     fun fetchPullRequestsPage(pageStart: Int = 0) {
         try {
-            val pullRequests = vcsService.getOpenPullRequests(pageStart, pageSize)
-            if (pullRequests.isNotEmpty()) {
-                logger.info("Fetched ${pullRequests.size} pull requests, adding to queue")
-                for (pullRequest in pullRequests) {
-//                    val diff = vcsService.getPullRequestDiff(pullRequest.id)
+            val pullRequestsPage = vcsService.getOpenPullRequests(pageStart, pageSize)
+            if (pullRequestsPage.values.isNotEmpty()) {
+                logger.info("Fetched ${pullRequestsPage.size} pull requests, adding to queue")
+                for (pullRequest in pullRequestsPage.values) {
                     reviewQueueService.enqueuePullRequestForReview(pullRequest)
                     logger.info("Added PR #${pullRequest.id} to queue")
                 }

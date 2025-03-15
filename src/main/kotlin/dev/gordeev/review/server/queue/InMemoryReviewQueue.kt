@@ -1,9 +1,10 @@
 package dev.gordeev.review.server.queue
 
+import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class InMemoryReviewQueue<T> : ReviewQueue<T> {
-    private val queue = ConcurrentLinkedQueue<T>()
+    private val queue = LinkedList<T>()
     
     override fun enqueue(item: T) {
         queue.add(item)
@@ -16,7 +17,11 @@ class InMemoryReviewQueue<T> : ReviewQueue<T> {
     override fun dequeue(): T? {
         return queue.poll()
     }
-    
+
+    override fun getAll(): List<T> {
+        return queue.toList()
+    }
+
     override fun peek(): T? {
         return queue.peek()
     }

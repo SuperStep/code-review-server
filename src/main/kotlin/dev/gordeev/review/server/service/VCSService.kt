@@ -1,6 +1,7 @@
 package dev.gordeev.review.server.service
 
 import dev.gordeev.review.server.model.PullRequest
+import dev.gordeev.review.server.model.PullRequestPage
 
 /**
  * Interface for Version Control System operations.
@@ -14,7 +15,7 @@ interface VCSService {
      * @param limit The maximum number of results to return
      * @return List of open pull requests
      */
-    fun getOpenPullRequests(start: Int = 0, limit: Int = 25): List<PullRequest>
+    fun getOpenPullRequests(start: Int = 0, limit: Int = 25): PullRequestPage
 
     /**
      * Retrieves the diff content for a specific pull request.

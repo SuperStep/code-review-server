@@ -2,8 +2,7 @@ package dev.gordeev.review.server.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.gordeev.review.server.config.BitbucketProperties
-import dev.gordeev.review.server.model.PullRequest
-import dev.gordeev.review.server.model.PullRequestResponse
+import dev.gordeev.review.server.model.PullRequestPage
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -16,7 +15,7 @@ class BitbucketService(
     private val okHttpClient: OkHttpClient,
     private val objectMapper: ObjectMapper
 ) : VCSService {
-    override fun getOpenPullRequests(start: Int, limit: Int): List<PullRequest> {
+    override fun getOpenPullRequests(start: Int, limit: Int): PullRequestPage {
         val url = "${bitbucketProperties.baseUrl}/projects/${bitbucketProperties.project}/repos/${bitbucketProperties.repository}/pull-requests?state=OPEN&start=$start&limit=$limit"
 
         val request = Request.Builder()
@@ -31,9 +30,8 @@ class BitbucketService(
                 throw RuntimeException("Failed to get pull requests: ${response.code}")
             }
 
-            val responseBody = response.body?.string() ?: return emptyList()
-            val pullRequestResponse = objectMapper.readValue(responseBody, PullRequestResponse::class.java)
-            return pullRequestResponse.values ?: emptyList()
+            val responseBody = response.body?.string() ?: return PullRequestPage(listOf(), true, start, limit)
+            return objectMapper.readValue(responseBody, PullRequestPage::class.java)
         }
     }
 
