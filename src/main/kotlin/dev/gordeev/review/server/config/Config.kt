@@ -17,18 +17,22 @@ class Config {
 
     @Bean
     @ConditionalOnProperty(name = ["ai.provider"], havingValue = "gemini", matchIfMissing = false)
-    fun geminiReviewProvider(geminiConfig: GeminiConfig): AiReviewProvider {
+    fun geminiProvider(geminiConfig: GeminiConfig): AiReviewProvider {
         return GeminiReviewProvider(geminiConfig)
     }
 
     @Bean
-    @Primary
     @ConditionalOnProperty(name = ["ai.provider"], havingValue = "ollama", matchIfMissing = true)
-    fun ollamaReviewProvider(
+    fun ollamaProvider(
         ollamaProperties: OllamaProperties,
         okHttpClient: OkHttpClient,
         objectMapper: ObjectMapper
     ): AiReviewProvider {
         return OllamaReviewProvider(ollamaProperties, okHttpClient, objectMapper)
+    }
+
+    @Bean
+    fun okHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder().build()
     }
 }

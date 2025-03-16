@@ -17,14 +17,6 @@ interface VCSService {
     fun getOpenPullRequests(start: Int = 0, limit: Int = 25): PullRequestPage
 
     /**
-     * Retrieves the diff content for a specific pull request.
-     *
-     * @param prId The pull request ID
-     * @return The diff content as a string
-     */
-    fun getPullRequestDiff(prId: Long): String
-
-    /**
      * Posts a review comment on a pull request.
      *
      * @param prId The pull request ID
@@ -32,4 +24,19 @@ interface VCSService {
      * @return Boolean indicating if the comment was posted successfully
      */
     fun postReviewComment(prId: Long, comment: String): Boolean
+
+    /**
+     * Gets all comments for a specific pull request
+     * @param prId The pull request ID
+     * @return List of comments as a JSON string
+     */
+    fun getPullRequestComments(prId: Long): String
+
+    /**
+     * Searches for a specific pattern in comments of a pull request
+     * @param prId The pull request ID
+     * @param pattern The string pattern to search for
+     * @return Map of comment IDs to comment text that match the pattern
+     */
+    fun searchPatternInPullRequestComments(prId: Long, pattern: String): Map<Long, String>
 }

@@ -10,9 +10,7 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
-import org.springframework.stereotype.Service
 
-@Service
 class OllamaReviewProvider(
     private val ollamaProperties: OllamaProperties,
     private val okHttpClient: OkHttpClient,
@@ -27,7 +25,7 @@ class OllamaReviewProvider(
                 model = ollamaProperties.model,
                 prompt = prompt,
                 temperature = ollamaProperties.temperature,
-                maxTokens = ollamaProperties.maxTokens
+                maxTokens = ollamaProperties.maxTokens,
             )
 
             val request = Request.Builder()
@@ -49,6 +47,7 @@ class OllamaReviewProvider(
                 }
 
                 val ollamaResponse = objectMapper.readValue(responseBody, OllamaResponse::class.java)
+                logger.info("Ollama comment: {}", ollamaResponse.response)
                 return ollamaResponse.response
             }
         } catch (e: Exception) {
@@ -62,7 +61,8 @@ class OllamaReviewProvider(
         val prompt: String,
         val temperature: Double = 0.7,
         @JsonProperty("max_tokens")
-        val maxTokens: Int = 4096
+        val maxTokens: Int = 4096,
+        val stream: Boolean = false
     )
 
     data class OllamaResponse(

@@ -26,13 +26,14 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-quartz")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("com.squareup.okhttp3:okhttp:4.12.0")
+	implementation("com.google.code.gson:gson:2.10.1")
 
 	// GIT
 	implementation("org.eclipse.jgit:org.eclipse.jgit:6.7.0.202309050840-r")
 
 
 	implementation("org.springframework.ai:spring-ai-ollama-spring-boot-starter")
-	implementation("org.springframework.ai:spring-ai-vertex-ai-gemini-spring-boot-starter")
+//	implementation("org.springframework.ai:spring-ai-vertex-ai-gemini-spring-boot-starter")
 //	developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 //	developmentOnly("org.springframework.ai:spring-ai-spring-boot-docker-compose")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")

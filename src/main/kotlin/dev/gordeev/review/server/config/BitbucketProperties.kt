@@ -3,7 +3,6 @@ package dev.gordeev.review.server.config
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
 
-@Component
 @ConfigurationProperties(prefix = "bitbucket")
 class BitbucketProperties {
     lateinit var baseUrl: String

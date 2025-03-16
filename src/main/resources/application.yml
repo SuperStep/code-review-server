@@ -10,16 +10,17 @@ app:
     pull-request-fetch:
       enabled: true
       interval-in-seconds: 10
+      bot-name: '@bot'
     review-process:
-      enabled: false
-      interval-in-seconds: 30
+      enabled: true
+      interval-in-seconds: 10
     review-result-process:
-      enabled: false
-      interval-in-seconds: 30
+      enabled: true
+      interval-in-seconds: 10
 
 # AI Provider Configuration
 ai:
-  provider: ollama  # Options: ollama, gemini
+  provider: gemini  # Options: ollama, gemini
 
 # Ollama Configuration
 ollama:

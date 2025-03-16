@@ -15,17 +15,17 @@ class ReviewProcessJob(
 ) : Job {
     override fun execute(context: JobExecutionContext) {
         while (true) {
-            reviewQueueService.genNextToReview()?.let { pullRequest ->
-                logger.info("Processing PR #${pullRequest.id}")
-                val reviewResult = reviewService.review(pullRequest)
+            reviewQueueService.genNextToReview()?.let { pullRequestToReview ->
+                logger.info("Processing PR #${pullRequestToReview.pullRequest.id}")
+                val reviewResult = reviewService.review(pullRequestToReview)
                 reviewQueueService.enqueueReviewResult(
                     ReviewResult(
-                        pullRequest,
+                        pullRequestToReview.pullRequest,
                         reviewResult,
                         ReviewStatus.COMPLETED
                     )
                 )
-                logger.info("Finished processing PR #${pullRequest.id}")
+                logger.info("Finished processing PR #${pullRequestToReview.pullRequest.id}")
             }
         }
     }

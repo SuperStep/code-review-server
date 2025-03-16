@@ -1,6 +1,7 @@
 package dev.gordeev.review.server.service
 
 import dev.gordeev.review.server.model.PullRequest
+import dev.gordeev.review.server.model.PullRequestToReview
 import dev.gordeev.review.server.service.git.GitDiffService
 import gordeev.dev.aicodereview.provider.AiReviewProvider
 import org.slf4j.LoggerFactory
@@ -14,7 +15,9 @@ class ReviewService(
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun review(pullRequest: PullRequest): String{
+    fun review(pullRequestToReview: PullRequestToReview): String{
+
+        val pullRequest = pullRequestToReview.pullRequest
 
         logger.info("Starting diff retrieval for PR #${pullRequest.id}")
         val startTime = System.nanoTime()
@@ -30,20 +33,23 @@ class ReviewService(
         logger.info("Diff retrieval completed for PR #${pullRequest.id} in $durationSeconds seconds")
 
         val prompt = """
-            You are a code reviewer. Review the following code diff and provide constructive feedback:
+            Ты проводишь ревью кода. Проверь следующий код на наличие ошибок, недочетов и лучших практик.
             
-            Pull Request: ${pullRequest.title}
+            Вот заголовок изменения: ${pullRequest.title}
             
-            Diff:
+            А вот изменения:
             ```
             ${diff}
             ```
+           
+            Пожалуйста, дай мне ответ на русском языке.
+            1. Общая оценка
+            2. Основные проблемы или вопросы
+            3. Стиль и рекомендации по лучшим практикам
+            4. Замечания по безопасности, если они применимы
             
-            Please provide:
-            1. Overall assessment
-            2. Key issues or concerns
-            3. Style and best practice suggestions
-            4. Security considerations if applicable
+            Так особенно учти комментарии автора? они очень важны, вот они: 
+            ${pullRequestToReview.reviewComment}
         """.trimIndent()
 
         try {

@@ -8,4 +8,6 @@ interface ReviewQueue<T> {
     fun peek(): T?
     fun isEmpty(): Boolean
     fun size(): Int
+    fun findById(id: Any): T?
+    fun exists(id: Any): Boolean
 }
