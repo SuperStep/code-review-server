@@ -22,6 +22,7 @@ class ReviewProcessJob(
                     ReviewResult(
                         pullRequestToReview.pullRequest,
                         reviewResult,
+                        pullRequestToReview.reviewComment,
                         ReviewStatus.COMPLETED
                     )
                 )
