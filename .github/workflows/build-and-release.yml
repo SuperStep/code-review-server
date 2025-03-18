@@ -89,14 +89,6 @@ jobs:
             ```bash
             docker run -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/code-review-server:${{ env.VERSION }}
             ```
-            
-            ### Configuration
-            Configure the application using environment variables:
-            - `BITBUCKET_BASE_URL`: Your Bitbucket server URL
-            - `BITBUCKET_TOKEN`: Your Bitbucket access token
-            - `BITBUCKET_PROJECT`: Your Bitbucket project key
-            - `BITBUCKET_REPOSITORY`: Your Bitbucket repository name
-            - `GEMINI_TOKEN`: Your Google Gemini API token
           draft: false
           prerelease: false
         env:

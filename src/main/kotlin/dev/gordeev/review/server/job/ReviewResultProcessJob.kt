@@ -12,11 +12,9 @@ class ReviewResultProcessJob(
     private val vcsService: VCSService,
 ) : Job {
     override fun execute(context: JobExecutionContext) {
-        while (true) {
-            reviewQueueService.genNextReviewResult()?.let { reviewResult ->
-                logger.info("Processing review result for PR #${reviewResult.pullRequest.id}")
-                vcsService.postReviewComment(reviewResult.pullRequest.id, reviewResult.reviewContent)
-            }
+        reviewQueueService.genNextReviewResult()?.let { reviewResult ->
+            logger.info("Processing review result for PR #${reviewResult.pullRequest.id}")
+            vcsService.postReviewComment(reviewResult.pullRequest.id, reviewResult.reviewContent)
         }
     }
 

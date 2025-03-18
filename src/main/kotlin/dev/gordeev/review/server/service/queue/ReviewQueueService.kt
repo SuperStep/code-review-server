@@ -38,7 +38,7 @@ class ReviewQueueService {
         }
 
         // Check if the pull request already exists in the queue
-        if (pullRequestQueue.exists(pullRequestToReview)) {
+        if (pullRequestQueue.exists(pullRequestToReview.pullRequest.id)) {
             logger.info("Pull request #$prId already exists in the queue. Skipping...")
             return
         }

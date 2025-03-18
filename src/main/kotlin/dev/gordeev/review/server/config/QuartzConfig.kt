@@ -7,14 +7,18 @@ import org.quartz.*
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.scheduling.quartz.SchedulerFactoryBean
 
 @Configuration
-class QuartzConfig(private val jobProperties: JobProperties) {
+class QuartzConfig(
+    private val jobProperties: JobProperties
+    ) {
 
     @Bean
     fun pullRequestFetchJobDetail(): JobDetail {
         return JobBuilder.newJob(PullRequestFetchJob::class.java)
             .withIdentity("pullRequestFetchJob")
+            .requestRecovery(true)
             .storeDurably()
             .build()
     }
