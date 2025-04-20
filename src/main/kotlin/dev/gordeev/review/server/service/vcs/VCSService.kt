@@ -1,5 +1,6 @@
 package dev.gordeev.review.server.service.vcs
 
+import dev.gordeev.review.server.model.Comment
 import dev.gordeev.review.server.model.PullRequestPage
 
 /**
@@ -36,7 +37,7 @@ interface VCSService {
      * Searches for a specific pattern in comments of a pull request
      * @param prId The pull request ID
      * @param pattern The string pattern to search for
-     * @return Map of comment IDs to comment text that match the pattern
+     * @return Map of comment IDs to comment objects with the matching pattern
      */
-    fun searchPatternInPullRequestComments(prId: Long, pattern: String): Map<Long, String>
+    fun searchPatternInPullRequestComments(prId: Long, pattern: String): Map<Long, Comment>
 }

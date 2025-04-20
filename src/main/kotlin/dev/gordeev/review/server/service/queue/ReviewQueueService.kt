@@ -4,9 +4,9 @@ import dev.gordeev.review.server.model.PullRequestToReview
 import dev.gordeev.review.server.model.ReviewResult
 import dev.gordeev.review.server.queue.InMemoryReviewQueue
 import dev.gordeev.review.server.queue.ReviewQueue
-import dev.gordeev.review.server.service.vcs.VCSService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.time.OffsetDateTime
 import java.util.concurrent.ConcurrentHashMap
 
 @Service
@@ -17,19 +17,19 @@ class ReviewQueueService {
     private val reviewResultQueue: ReviewQueue<ReviewResult> = InMemoryReviewQueue { it.pullRequest.id }
 
     // Track reviewed PRs with their last updated date and review comment
-    private val reviewedPRs = ConcurrentHashMap<Long, Pair<Long, String>>()
+    private val reviewedPRs = ConcurrentHashMap<Long, Pair<OffsetDateTime, String>>()
 
     fun enqueuePullRequestForReview(pullRequestToReview: PullRequestToReview) {
         val prId = pullRequestToReview.pullRequest.id
-        val prUpdateDate = pullRequestToReview.pullRequest.updatedDate
-        val reviewComment = pullRequestToReview.reviewComment ?: ""
+        val commentRequestDateTime = pullRequestToReview.commentRequestDateTime
+        val reviewComment = pullRequestToReview.reviewComment
 
         // Check if PR was already reviewed
         if (reviewedPRs.containsKey(prId)) {
             val (lastReviewedDate, lastReviewComment) = reviewedPRs[prId]!!
 
             // Skip if PR hasn't been updated and review comment is the same
-            if (prUpdateDate <= lastReviewedDate && reviewComment == lastReviewComment) {
+            if (commentRequestDateTime <= lastReviewedDate && reviewComment == lastReviewComment) {
                 logger.info("Pull request #$prId already reviewed and hasn't changed. Skipping...")
                 return
             }
@@ -53,8 +53,8 @@ class ReviewQueueService {
             logger.info("  Queue is empty")
         } else {
             queueEntries.map { it.pullRequest }.forEachIndexed { index, pr ->
-                logger.info("  ${index + 1}. PR #${pr.id}: ${pr.title} by ${pr.author}")
-                logger.info("     Branch: ${pr.fromRef.displayId} → ${pr.toRef.displayId}")
+                logger.info("  ${index + 1}. PR #${pr.id}: ${pr.title} by ${pr.user.login}")
+                logger.info("     Branch: ${pr.base.ref} → ${pr.head.ref}")
                 logger.info("     Created: ${pr.createdDate}")
                 logger.info("     Updated: ${pr.updatedDate}")
             }

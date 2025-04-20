@@ -9,7 +9,7 @@ app:
   jobs:
     pull-request-fetch:
       enabled: true
-      interval-in-seconds: 10
+      interval-in-seconds: 60
       bot-name: '@bot'
     review-process:
       enabled: true
@@ -34,14 +34,11 @@ gemini:
   # token: your-gemini-api-token
   model: gemini-2.0-flash
 
-# Bitbucket Configuration
-bitbucket:
-  baseUrl: http://localhost:7990/rest/api/1.0
-#  token: your-bitbucket-access-token
-#  certificatePath: path
-#  certificatePassword: your-password
-  project: SWTR
-  repository: swtr-core
+gitea:
+  baseUrl: http://localhost:3000
+  token: ffcd50d94a40abd4c2c93a93a65edddfdf462ba1
+  owner: gitea_admin
+  repository: example
 
 logging:
   level:

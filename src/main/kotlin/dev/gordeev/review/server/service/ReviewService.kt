@@ -23,9 +23,9 @@ class ReviewService(
         val startTime = System.nanoTime()
 
         val diff = gitDiffService.getDiffBetweenBranches(
-            "http://localhost:7990/scm/swtr/swtr-core.git",
-            pullRequest.fromRef.displayId,
-            pullRequest.toRef.displayId
+            pullRequest.base.repo.cloneUrl,
+            pullRequest.base.ref,
+            pullRequest.head.ref
         )
 
         val endTime = System.nanoTime()

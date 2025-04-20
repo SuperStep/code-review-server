@@ -7,6 +7,7 @@ import dev.gordeev.review.server.service.vcs.VCSService
 import org.quartz.Job
 import org.quartz.JobExecutionContext
 import org.springframework.stereotype.Component
+import java.time.OffsetDateTime
 
 @Component
 class PullRequestFetchJob(
@@ -34,9 +35,17 @@ class PullRequestFetchJob(
                     // Search for the pattern in PR comments
                     val matchingComments = vcsService.searchPatternInPullRequestComments(pullRequest.id, commentPattern)
 
+                    val maxCommentUpdateTime = matchingComments.maxOfOrNull { it.value.updatedAt }
+
                     if (matchingComments.isNotEmpty()) {
                         logger.info("PR #${pullRequest.id} has comments matching pattern '$commentPattern', adding to review queue")
-                        reviewQueueService.enqueuePullRequestForReview(PullRequestToReview(pullRequest, matchingComments.values.joinToString { it }))
+                        reviewQueueService.enqueuePullRequestForReview(
+                            PullRequestToReview(
+                                pullRequest,
+                                matchingComments.values.joinToString { it.content },
+                                maxCommentUpdateTime?: OffsetDateTime.now()
+                            )
+                        )
                     } else {
                         logger.debug("PR #${pullRequest.id} has no comments matching pattern '$commentPattern', skipping")
                     }
