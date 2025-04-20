@@ -3,6 +3,11 @@ spring:
     name: code-review-server
   quartz:
     job-store-type: memory
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
 
 # Job Configuration
 app:
