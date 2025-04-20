@@ -1,6 +1,6 @@
-package dev.gordeev.review.server.service
+package dev.gordeev.review.server.service.review
 
-import dev.gordeev.review.server.model.PullRequest
+import dev.gordeev.review.server.config.AiReviewProperties
 import dev.gordeev.review.server.model.PullRequestToReview
 import dev.gordeev.review.server.service.git.GitDiffService
 import gordeev.dev.aicodereview.provider.AiReviewProvider
@@ -11,7 +11,8 @@ import org.springframework.stereotype.Service
 @Service
 class ReviewService(
     val gitDiffService: GitDiffService,
-    val atReviewProvider: AiReviewProvider
+    val atReviewProvider: AiReviewProvider,
+    val aiReviewProperties: AiReviewProperties
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -32,25 +33,12 @@ class ReviewService(
         val durationSeconds = (endTime - startTime) / 1_000_000_000.0
         logger.info("Diff retrieval completed for PR #${pullRequest.id} in $durationSeconds seconds")
 
-        val prompt = """
-            Ты проводишь ревью кода. Проверь следующий код на наличие ошибок, недочетов и лучших практик.
-            
-            Вот заголовок изменения: ${pullRequest.title}
-            
-            А вот изменения:
-            ```
-            ${diff}
-            ```
-           
-            Пожалуйста, дай мне ответ на русском языке.
-            1. Общая оценка
-            2. Основные проблемы или вопросы
-            3. Стиль и рекомендации по лучшим практикам
-            4. Замечания по безопасности, если они применимы
-            
-            Так особенно учти комментарии автора? они очень важны, вот они: 
-            ${pullRequestToReview.reviewComment}
-        """.trimIndent()
+        val prompt = aiReviewProperties.review.prompt.start +
+                pullRequest.title +
+                aiReviewProperties.review.prompt.diff +
+                diff +
+                aiReviewProperties.review.prompt.additional +
+                pullRequestToReview.reviewComment
 
         try {
             atReviewProvider.getReview(prompt).let {

@@ -3,7 +3,13 @@ networks:
     external: false
 
 services:
-  server:
+  code-review-server:
+    image: superstep/code-review-server:latest
+    container_name: code-review-server
+    volumes:
+      - ../src/main/resources/application.yml:/app/application.yml
+
+  gitea:
     image: docker.gitea.com/gitea:1.23.7
     container_name: gitea
     environment:

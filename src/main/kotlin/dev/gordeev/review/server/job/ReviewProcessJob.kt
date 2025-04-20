@@ -3,7 +3,7 @@ package dev.gordeev.review.server.job
 import dev.gordeev.review.server.model.ReviewResult
 import dev.gordeev.review.server.model.ReviewStatus
 import dev.gordeev.review.server.service.queue.ReviewQueueService
-import dev.gordeev.review.server.service.ReviewService
+import dev.gordeev.review.server.service.review.ReviewService
 import org.quartz.Job
 import org.quartz.JobExecutionContext
 import org.springframework.stereotype.Component
