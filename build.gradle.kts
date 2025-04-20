@@ -30,7 +30,9 @@ dependencies {
 
 	// GIT
 	implementation("org.eclipse.jgit:org.eclipse.jgit:6.7.0.202309050840-r")
-
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.flywaydb:flyway-core")
+	implementation("org.postgresql:postgresql")
 
 	implementation("org.springframework.ai:spring-ai-ollama-spring-boot-starter")
 //	implementation("org.springframework.ai:spring-ai-vertex-ai-gemini-spring-boot-starter")
