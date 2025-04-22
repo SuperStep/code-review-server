@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     
     steps:
       - uses: actions/checkout@v3
@@ -107,7 +107,7 @@ jobs:
             ### Usage
             ```bash
             docker run -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/code-review-server:${{ env.VERSION }}
-            ```
+
           draft: false
           prerelease: false
         env:
