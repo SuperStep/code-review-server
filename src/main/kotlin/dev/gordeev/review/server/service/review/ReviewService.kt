@@ -1,6 +1,7 @@
 package dev.gordeev.review.server.service.review
 
 import dev.gordeev.review.server.config.AiReviewProperties
+import dev.gordeev.review.server.config.GiteaProperties
 import dev.gordeev.review.server.model.PullRequestToReview
 import dev.gordeev.review.server.service.git.GitDiffService
 import gordeev.dev.aicodereview.provider.AiReviewProvider
@@ -12,7 +13,8 @@ import org.springframework.stereotype.Service
 class ReviewService(
     val gitDiffService: GitDiffService,
     val atReviewProvider: AiReviewProvider,
-    val aiReviewProperties: AiReviewProperties
+    val aiReviewProperties: AiReviewProperties,
+    val giteaProperties: GiteaProperties
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -24,7 +26,7 @@ class ReviewService(
         val startTime = System.nanoTime()
 
         val diff = gitDiffService.getDiffBetweenBranches(
-            pullRequest.base.repo.cloneUrl,
+            "${giteaProperties.baseUrl}/${pullRequest.base.repo.fullName}.git",
             pullRequest.base.ref,
             pullRequest.head.ref
         )

@@ -1,14 +1,28 @@
-networks:
-  gitea:
-    external: false
-
 services:
   code-review-server:
-    image: superstep/code-review-server:latest
+    image: docker.io/superstep/code-review-server:0.0.5
     container_name: code-review-server
+    environment:
+      - GITEA_BASE_URL=http://gitea:3000
+      - GITEA_TOKEN=ffcd50d94a40abd4c2c93a93a65edddfdf462ba1
+      - GITEA_OWNER=gitea_admin
+      - GITEA_REPOSITORY=example
+      - AI_PROVIDER=ollama
+#      - GEMINI_TOKEN=our-gemini-api-token
+#      - GEMINI_MODEL=gemini-2.0-flash
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - OLLAMA_MODEL=qwen2.5-coder:3b
+      - GIT_WORK_DIRECTORY=/git
+      - JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+    ports:
+      - "8080:8080"
+      - "5005:5005"
     volumes:
-      - ../src/main/resources/application.yml:/app/application.yml
-
+      - .git/:/git/
+    networks:
+      - review_demo
+    depends_on:
+      - gitea
   gitea:
     image: docker.gitea.com/gitea:1.23.7
     container_name: gitea
@@ -22,7 +36,7 @@ services:
       - GITEA__database__PASSWD=gitea
     restart: always
     networks:
-      - gitea
+      - review_demo
     volumes:
       - ./gitea:/data
       - /etc/timezone:/etc/timezone:ro
@@ -40,6 +54,10 @@ services:
         - POSTGRES_PASSWORD=gitea
         - POSTGRES_DB=gitea
     networks:
-        - gitea
+        - review_demo
     volumes:
         - ./postgres:/var/lib/postgresql/data
+
+networks:
+  review_demo:
+    external: false

@@ -31,47 +31,7 @@ The application follows a service-oriented architecture with:
 - JGit for Git operations
 - AI-powered code review provider
 
-## Installation
-
-### Docker Run
-The easiest way to run Code Review Server is using Docker:
-
-```bash
-docker run -p 8080:8080 \
-  -e BITBUCKET_BASE_URL=https://your-bitbucket-server.com \
-  -e BITBUCKET_TOKEN=your_token \
-  -e BITBUCKET_PROJECT=your_project_key \
-  -e BITBUCKET_REPOSITORY=your_repo_name \
-  -e AI_PROVIDER=gemini \
-  -e GEMINI_TOKEN=your_gemini_api_token \
-  -e GEMINI_MODEL=gemini-2.0-flash \
-  superstep/code-review-server:latest
-```
-
+## Running Locally
 ### Docker Compose
 
-Alternatively, you can use Docker Compose with the provided compose.yaml file:
-
-```yaml
-version: '3'
-services:
-  code-review-server:
-    image: superstep/code-review-server:latest
-    ports:
-      - "8080:8080"
-    environment:
-      - BITBUCKET_BASE_URL=https://your-bitbucket-server.com
-      - BITBUCKET_TOKEN=your_token
-      - BITBUCKET_PROJECT=your_project_key
-      - BITBUCKET_REPOSITORY=your_repo_name
-      - GEMINI_TOKEN=your_gemini_api_token
-  ollama:
-    image: ollama/ollama:latest
-    ports:
-      - "11434:11434"
-```
-
-Run with
-```bash
-docker-compose up -d
-```
+You can use Docker Compose with the provided [docker-compose.yaml](dev/docker-compose.yaml) file.

@@ -35,5 +35,7 @@ data class Repo(
     @JsonProperty("ssh_url")
     val sshUrl: String,
     @JsonProperty("clone_url")
-    val cloneUrl: String
+    val cloneUrl: String,
+    @JsonProperty("full_name")
+    val fullName: String
 )

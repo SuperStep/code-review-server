@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     
     steps:
       - uses: actions/checkout@v3
@@ -37,6 +37,25 @@ jobs:
           
           # Set version as output
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Commit updated build.gradle.kts
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add build.gradle.kts
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit in build.gradle.kts."
+          else
+            git commit -m "chore: Update version to ${{ env.VERSION }} [skip ci]"
+            # Decide if you want to push this commit. Pushing to a tag ref is unusual.
+            # You might want to push to the branch the tag was created from (e.g., main)
+            # Example (use with caution, ensure correct branch): git push origin HEAD:main
+            echo "Committed build.gradle.kts version update."
+            # If you uncomment the push command above, ensure the checkout action has a token with write permissions
+            # e.g., add `token: ${{ secrets.PAT_TOKEN }}` to the checkout step if needed.
+          fi
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -79,7 +98,7 @@ jobs:
             ## Code Review Server Release ${{ env.VERSION }}
             
             ### Docker Image
-            ```
+            ```bash
             docker pull ${{ secrets.DOCKER_USERNAME }}/code-review-server:${{ env.VERSION }}
             ```
             
