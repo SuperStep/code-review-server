@@ -17,7 +17,11 @@ data class AiReviewProperties(
     /**
      * Configuration specific to the code review functionality.
      */
-    var review: ReviewProperties = ReviewProperties()
+    var review: ReviewProperties = ReviewProperties(),
+    /**
+     * Read timeout for any AI provider.
+     */
+    var readTimeoutSec: Long = 60,
 )
 
 /**
