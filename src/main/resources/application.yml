@@ -21,6 +21,7 @@ app:
 # AI Provider Configuration
 ai:
   provider: gemini  # Options: ollama, gemini
+  readTimeoutSec: 60
   review:
     prompt:
       start: |
