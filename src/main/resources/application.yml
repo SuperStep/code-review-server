@@ -51,7 +51,7 @@ gemini:
 
 gitea:
   baseUrl: http://localhost:3000
-  token: ffcd50d94a40abd4c2c93a93a65edddfdf462ba1
+  token: ffcd50d94a40abd4c2c93a93a65edddfdf462ba1 # gitea_admin:gitea_admin
   owner: gitea_admin
   repository: example
 
