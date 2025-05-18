@@ -6,7 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 data class JobProperties(
     val pullRequestFetch: prFetchJobConfig = prFetchJobConfig(),
     val reviewProcess: JobConfig = JobConfig(),
-    val reviewResultProcess: JobConfig = JobConfig()
+    val reviewResultProcess: JobConfig = JobConfig(),
+    var repositoryIndexer: JobConfig = JobConfig()
 )
 
 data class JobConfig(

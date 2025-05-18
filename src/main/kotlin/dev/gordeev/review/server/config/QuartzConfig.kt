@@ -1,6 +1,7 @@
 package dev.gordeev.review.server.config
 
 import dev.gordeev.review.server.job.PullRequestFetchJob
+import dev.gordeev.review.server.job.RepositoryIndexerJob
 import dev.gordeev.review.server.job.ReviewProcessJob
 import dev.gordeev.review.server.job.ReviewResultProcessJob
 import org.quartz.*
@@ -76,6 +77,29 @@ class QuartzConfig(
             .withSchedule(
                 SimpleScheduleBuilder.simpleSchedule()
                     .withIntervalInSeconds(jobProperties.reviewResultProcess.intervalInSeconds)
+                    .repeatForever()
+            )
+            .build()
+    }
+
+    @Bean
+    fun repositoryIndexerJobDetail(): JobDetail {
+        return JobBuilder.newJob(RepositoryIndexerJob::class.java)
+            .withIdentity("repositoryIndexerJob")
+            .storeDurably()
+            .build()
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = ["app.jobs.repository-indexer.enabled"], havingValue = "true", matchIfMissing = true)
+    fun repositoryIndexerTrigger(repositoryIndexerJobDetail: JobDetail): Trigger {
+        return TriggerBuilder.newTrigger()
+            .forJob(repositoryIndexerJobDetail)
+            .withIdentity("repositoryIndexerTrigger")
+            .withSchedule(
+                SimpleScheduleBuilder.simpleSchedule()
+                    // Assuming you will add a 'repositoryIndexer' section to your JobProperties
+                    .withIntervalInSeconds(jobProperties.repositoryIndexer.intervalInSeconds)
                     .repeatForever()
             )
             .build()

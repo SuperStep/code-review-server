@@ -3,7 +3,7 @@ package dev.gordeev.review.server.service.review
 import dev.gordeev.review.server.config.AiReviewProperties
 import dev.gordeev.review.server.config.GiteaProperties
 import dev.gordeev.review.server.model.PullRequestToReview
-import dev.gordeev.review.server.service.git.GitDiffService
+import dev.gordeev.review.server.service.git.GitService
 import gordeev.dev.aicodereview.provider.AiReviewProvider
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class ReviewService(
-    val gitDiffService: GitDiffService,
+    val gitDiffService: GitService,
     val atReviewProvider: AiReviewProvider,
     val aiReviewProperties: AiReviewProperties,
     val giteaProperties: GiteaProperties

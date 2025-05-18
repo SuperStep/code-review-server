@@ -3,6 +3,11 @@ spring:
     name: code-review-server
   quartz:
     job-store-type: memory
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
 
 # Job Configuration
 app:
@@ -17,6 +22,9 @@ app:
     review-result-process:
       enabled: true
       interval-in-seconds: 10
+    repository-indexer:
+      enabled: true
+      intervalInSeconds: 300
 
 # AI Provider Configuration
 ai:
@@ -56,11 +64,18 @@ gitea:
   owner: gitea_admin
   repository: example
 
-logging:
-  level:
-    dev.gordeev.server: DEBUG
-
 # Git diff configuration
 git:
   work-directory: /tmp/git
 
+# Indexer Configuration
+indexer:
+  repositories:
+    - name: "my-sample-project"
+      url: https://github.com/spring-projects/spring-petclinic.git
+  clone:
+    base-path: /tmp/git
+
+logging:
+  level:
+    dev.gordeev.server: DEBUG

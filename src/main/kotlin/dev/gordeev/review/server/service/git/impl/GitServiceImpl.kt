@@ -1,19 +1,25 @@
 package dev.gordeev.review.server.service.git.impl
 
 import dev.gordeev.review.server.config.GitConfig
-import dev.gordeev.review.server.service.git.GitDiffService
+import dev.gordeev.review.server.config.RepositoryConfig
+import dev.gordeev.review.server.service.git.GitService
 import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.api.errors.GitAPIException
 import org.eclipse.jgit.diff.DiffFormatter
 import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.revwalk.RevWalk
 import org.eclipse.jgit.transport.RefSpec
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.nio.file.Path
 import java.util.UUID
 
 @Service
-class GitDiffServiceImpl(private val gitConfig: GitConfig) : GitDiffService {
+class GitServiceImpl(private val gitConfig: GitConfig) : GitService {
+
+    private val logger = LoggerFactory.getLogger(GitServiceImpl::class.java)
 
     init {
         // Ensure the work directory exists
@@ -103,5 +109,48 @@ class GitDiffServiceImpl(private val gitConfig: GitConfig) : GitDiffService {
             revWalk.dispose()
             outputStream.close()
         }
+    }
+
+    override fun cloneRepository(repoConfig: RepositoryConfig, clonePath: Path): File? {
+        val localPath = clonePath.resolve(repoConfig.name.sanitizeForPath()).toFile()
+
+        if (localPath.exists()) {
+            logger.info("Repository ${repoConfig.name} already cloned at $localPath. Skipping clone.")
+            // Optionally, you could add logic here to pull latest changes
+            // For now, we assume if it exists, it's up-to-date for this run.
+            // Or delete and re-clone:
+            // localPath.deleteRecursively()
+            // logger.info("Deleted existing directory $localPath for re-cloning.")
+        }
+
+        logger.info("Cloning repository ${repoConfig.name} from ${repoConfig.url} to $localPath")
+        try {
+            val cloneCommand = Git.cloneRepository()
+                .setURI(repoConfig.url)
+                .setDirectory(localPath)
+
+            repoConfig.branch?.let {
+                cloneCommand.setBranch(it)
+                logger.info("Cloning branch: $it")
+            }
+            // Add authentication if needed, e.g. for private repositories
+            // .setCredentialsProvider(UsernamePasswordCredentialsProvider("USERNAME", "PASSWORD"))
+
+            val git = cloneCommand.call()
+            git.close() // Close the git object to release resources
+            logger.info("Successfully cloned ${repoConfig.name}")
+            return localPath
+        } catch (e: GitAPIException) {
+            logger.error("Error cloning repository ${repoConfig.name}: ${e.message}", e)
+            // Clean up partially cloned directory if cloning failed
+            if (localPath.exists()) {
+                localPath.deleteRecursively()
+            }
+            return null
+        }
+    }
+
+    private fun String.sanitizeForPath(): String {
+        return this.replace(Regex("[^a-zA-Z0-9_.-]"), "_")
     }
 }
