@@ -33,7 +33,6 @@ class RepositoryIndexerJob(
                 return
             }
 
-
             repoIndexerConfig.repositories.forEach { repoConfig ->
 
                 logger.info("Processing repository: ${repoConfig.name} from ${repoConfig.url}")

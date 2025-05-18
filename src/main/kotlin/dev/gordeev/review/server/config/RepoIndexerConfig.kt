@@ -1,7 +1,6 @@
 package dev.gordeev.review.server.config
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.stereotype.Component
 
 @ConfigurationProperties(prefix = "indexer")
 class RepoIndexerConfig(
