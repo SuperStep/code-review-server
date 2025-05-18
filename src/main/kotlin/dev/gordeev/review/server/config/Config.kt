@@ -10,7 +10,7 @@ import okhttp3.OkHttpClient
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Primary
+import java.util.concurrent.TimeUnit
 
 @Configuration
 class Config {
@@ -32,7 +32,9 @@ class Config {
     }
 
     @Bean
-    fun okHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder().build()
+    fun okHttpClient(aiReviewProperties: AiReviewProperties): OkHttpClient {
+        return OkHttpClient.Builder()
+            .readTimeout(aiReviewProperties.readTimeoutSec, TimeUnit.SECONDS)
+            .build()
     }
 }

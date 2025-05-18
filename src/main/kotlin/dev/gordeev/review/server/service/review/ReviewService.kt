@@ -35,6 +35,8 @@ class ReviewService(
         val durationSeconds = (endTime - startTime) / 1_000_000_000.0
         logger.info("Diff retrieval completed for PR #${pullRequest.id} in $durationSeconds seconds")
 
+
+        logger.info("Starting AI review generation for PR #${pullRequest.id}")
         val prompt = aiReviewProperties.review.prompt.start +
                 pullRequest.title +
                 aiReviewProperties.review.prompt.diff +
@@ -44,7 +46,8 @@ class ReviewService(
 
         try {
             atReviewProvider.getReview(prompt).let {
-                return it.toString()
+                logger.info("AI review generated for PR #${pullRequest.id}")
+                return it ?: "No review generated"
             }
         } catch (e: Exception) {
             logger.error("Error generating AI review for PR #${pullRequest.id}", e)

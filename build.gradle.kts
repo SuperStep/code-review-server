@@ -58,18 +58,18 @@ tasks.withType<Test> {
 }
 
 // Docker image configuration
-//tasks.bootBuildImage {
-//	imageName.set("superstep/code-review-server:${project.version}")
-//
-//	// Optional: customize the build
-//	environment.set(mapOf(
-//		"BP_JVM_VERSION" to "21.*"
-//	))
-//
-//	docker {
-//		publishRegistry {
-//			username.set(System.getenv("DOCKER_USERNAME") ?: "username")
-//			password.set(System.getenv("DOCKER_PASSWORD") ?: "password")
-//		}
-//	}
-//}
+tasks.bootBuildImage {
+	imageName.set("superstep/code-review-server:${project.version}")
+
+	// Optional: customize the build
+	environment.set(mapOf(
+		"BP_JVM_VERSION" to "21.*"
+	))
+
+	docker {
+		publishRegistry {
+			username.set(System.getenv("DOCKER_USERNAME") ?: "username")
+			password.set(System.getenv("DOCKER_PASSWORD") ?: "password")
+		}
+	}
+}
