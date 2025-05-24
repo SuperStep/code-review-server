@@ -13,14 +13,14 @@ spring:
 app:
   jobs:
     pull-request-fetch:
-      enabled: true
+      enabled: false
       interval-in-seconds: 60
       bot-name: '@bot'
     review-process:
-      enabled: true
+      enabled: false
       interval-in-seconds: 10
     review-result-process:
-      enabled: true
+      enabled: false
       interval-in-seconds: 10
     repository-indexer:
       enabled: true
@@ -32,19 +32,24 @@ ai:
   readTimeoutSec: 60
   review:
     prompt:
-      start: |
+      template: |
         Ты проводишь ревью кода. Проверь следующий код на наличие ошибок, недочетов и лучших практик.
         Не обясняй что тут происходит, просто найти проблемные места ии недочеты.
-      diff: |
+        
+        Pull Request: ${title}
+        
         Вот изменения:
-        >>>>>
-      additional: | 
+        ${diff}
+        
         Пожалуйста, дай мне ответ на русском языке.
         1. Основные проблемы или вопросы
         2. Стиль и рекомендации по лучшим практикам
         3. Замечания по безопасности, если они применимы
 
-        Особенно учти комментарии автора они очень важны, вот они: 
+        ${reviewComment}
+
+        Особенно учти контекст репозитория ниже:
+        ${context}
 
 # Ollama Configuration
 ollama:

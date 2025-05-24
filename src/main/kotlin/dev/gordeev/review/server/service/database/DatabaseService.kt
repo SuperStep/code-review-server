@@ -18,9 +18,9 @@ class DatabaseService(private val jdbcTemplate: JdbcTemplate) {
      * @param repoName The name of the repository to search
      * @param query The search query
      * @param limit The maximum number of results to return (defaults to 10)
-     * @return List of results containing chunk text and distance
+     * @return List of results containing chunk text and distance as strings
      */
-    fun semanticSearch(repoName: String, query: String, limit: Int = 10): List<Map<String, Any>> {
+    fun semanticSearch(repoName: String, query: String, limit: Int = 10): List<Map<String, String>> {
         val tableName = sanitizeTableName(repoName)
         val embeddingsTable = "${tableName}_contents_embeddings"
 
@@ -34,7 +34,14 @@ class DatabaseService(private val jdbcTemplate: JdbcTemplate) {
     """.trimIndent()
 
         try {
-            val results = jdbcTemplate.queryForList(sql, query, limit)
+            val rawResults = jdbcTemplate.queryForList(sql, query, limit)
+            // Convert the results to ensure all values are strings
+            val results = rawResults.map { row ->
+                mapOf(
+                    "chunk" to (row["chunk"] as String),
+                    "distance" to (row["distance"]?.toString() ?: "")
+                )
+            }
             logger.info("Semantic search in $embeddingsTable returned ${results.size} results for query: '$query'")
             return results
         } catch (e: Exception) {

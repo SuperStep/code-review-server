@@ -29,6 +29,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("com.squareup.okhttp3:okhttp:4.12.0")
 	implementation("com.google.code.gson:gson:2.10.1")
+	implementation("org.apache.commons:commons-text:1.11.0")
 
 	// GIT
 	implementation("org.eclipse.jgit:org.eclipse.jgit:6.7.0.202309050840-r")

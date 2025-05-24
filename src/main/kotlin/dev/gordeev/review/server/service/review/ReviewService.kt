@@ -2,9 +2,12 @@ package dev.gordeev.review.server.service.review
 
 import dev.gordeev.review.server.config.AiReviewProperties
 import dev.gordeev.review.server.config.GiteaProperties
+import dev.gordeev.review.server.model.PullRequest
 import dev.gordeev.review.server.model.PullRequestToReview
+import dev.gordeev.review.server.service.database.DatabaseService
 import dev.gordeev.review.server.service.git.GitService
 import gordeev.dev.aicodereview.provider.AiReviewProvider
+import org.apache.commons.text.StringSubstitutor
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service
 class ReviewService(
     val gitDiffService: GitService,
     val atReviewProvider: AiReviewProvider,
+    val databaseService: DatabaseService,
     val aiReviewProperties: AiReviewProperties,
     val giteaProperties: GiteaProperties
 ) {
@@ -35,14 +39,17 @@ class ReviewService(
         val durationSeconds = (endTime - startTime) / 1_000_000_000.0
         logger.info("Diff retrieval completed for PR #${pullRequest.id} in $durationSeconds seconds")
 
+        val searchResults = databaseService.semanticSearch(pullRequest.base.repo.name, diff, 10)
+
+        var prompt = buildPromptFromTemplate(
+            aiReviewProperties.review.prompt.template,
+            pullRequest,
+            diff,
+            pullRequestToReview,
+            searchResults.map { it.values }.flatten()
+        )
 
         logger.info("Starting AI review generation for PR #${pullRequest.id}")
-        val prompt = aiReviewProperties.review.prompt.start +
-                pullRequest.title +
-                aiReviewProperties.review.prompt.diff +
-                diff +
-                aiReviewProperties.review.prompt.additional +
-                pullRequestToReview.reviewComment
 
         try {
             atReviewProvider.getReview(prompt).let {
@@ -53,5 +60,23 @@ class ReviewService(
             logger.error("Error generating AI review for PR #${pullRequest.id}", e)
             throw e
         }
+    }
+
+    private fun buildPromptFromTemplate(
+        template: String,
+        pullRequest: PullRequest,
+        diff: String,
+        pullRequestToReview: PullRequestToReview,
+        searchResults: List<String>
+    ): String {
+        val variables = mapOf(
+            "title" to pullRequest.title,
+            "diff" to diff,
+            "reviewComment" to pullRequestToReview.reviewComment,
+            "context" to searchResults.joinToString("\n\n")
+        )
+
+        val substitutor = StringSubstitutor(variables)
+        return substitutor.replace(template)
     }
 }

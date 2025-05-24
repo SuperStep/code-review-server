@@ -10,6 +10,15 @@ services:
       - OLLAMA_PORT=11434
     networks:
       - review_demo
+    deploy:
+      # Just for local testing
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 4G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
   code-review-server:
     image: docker.io/superstep/code-review-server:0.0.6
     container_name: code-review-server
@@ -86,7 +95,7 @@ services:
   vectorizer-worker:
     image: timescale/pgai-vectorizer-worker:latest
     environment:
-      PGAI_VECTORIZER_WORKER_DB_URL: postgres://postgres:postgres@db:5432/postgres
+      PGAI_VECTORIZER_WORKER_DB_URL: postgres://postgres:postgres@db-indexer:5432/postgres
       OLLAMA_HOST: http://host.docker.internal:11434
     command: [ "--poll-interval", "5s", "--log-level", "DEBUG" ]
 

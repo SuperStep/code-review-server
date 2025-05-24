@@ -36,20 +36,12 @@ data class ReviewProperties(
 )
 
 /**
- * Defines the different parts of the prompt sent to the AI for code review.
+ * Defines the prompt template with placeholders for variables.
  * Maps properties under 'ai.review.prompt'.
  */
 data class PromptProperties(
     /**
-     * The initial part of the prompt, setting the context for the AI.
+     * The prompt template with placeholders for variables like ${title}, ${diff}, etc.
      */
-    var start: String = "",
-    /**
-     * The part of the prompt introducing the code diff.
-     */
-    var diff: String = "",
-    /**
-     * Additional instructions or formatting requirements for the AI's response.
-     */
-    var additional: String = ""
+    var template: String = ""
 )
