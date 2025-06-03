@@ -39,7 +39,14 @@ class ReviewService(
         val durationSeconds = (endTime - startTime) / 1_000_000_000.0
         logger.info("Diff retrieval completed for PR #${pullRequest.id} in $durationSeconds seconds")
 
-        val searchResults = ragService.semanticSearch(pullRequest.base.repo.name, diff, 10)
+        var searchResults = emptyList<Map<String, String>>()
+        try {
+            logger.info("Starting semantic search for PR #${pullRequest.id}")
+            searchResults = ragService.semanticSearch(pullRequest.base.repo.name, diff, 10)
+        } catch (e: Exception) {
+            // Do not throw exception, continue with review without context
+            logger.error("Error performing semantic search for PR #${pullRequest.id}", e)
+        }
 
         var prompt = buildPromptFromTemplate(
             aiReviewProperties.review.prompt.template,
