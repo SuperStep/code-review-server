@@ -4,7 +4,7 @@ import dev.gordeev.review.server.config.AiReviewProperties
 import dev.gordeev.review.server.config.GiteaProperties
 import dev.gordeev.review.server.model.PullRequest
 import dev.gordeev.review.server.model.PullRequestToReview
-import dev.gordeev.review.server.service.database.DatabaseService
+import dev.gordeev.review.server.service.database.RagService
 import dev.gordeev.review.server.service.git.GitService
 import gordeev.dev.aicodereview.provider.AiReviewProvider
 import org.apache.commons.text.StringSubstitutor
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service
 class ReviewService(
     val gitDiffService: GitService,
     val atReviewProvider: AiReviewProvider,
-    val databaseService: DatabaseService,
+    val ragService: RagService,
     val aiReviewProperties: AiReviewProperties,
     val giteaProperties: GiteaProperties
 ) {
@@ -39,7 +39,7 @@ class ReviewService(
         val durationSeconds = (endTime - startTime) / 1_000_000_000.0
         logger.info("Diff retrieval completed for PR #${pullRequest.id} in $durationSeconds seconds")
 
-        val searchResults = databaseService.semanticSearch(pullRequest.base.repo.name, diff, 10)
+        val searchResults = ragService.semanticSearch(pullRequest.base.repo.name, diff, 10)
 
         var prompt = buildPromptFromTemplate(
             aiReviewProperties.review.prompt.template,

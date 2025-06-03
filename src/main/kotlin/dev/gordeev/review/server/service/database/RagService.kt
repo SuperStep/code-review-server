@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class DatabaseService(private val jdbcTemplate: JdbcTemplate) {
+class RagService(private val jdbcTemplate: JdbcTemplate) {
 
-    private val logger = LoggerFactory.getLogger(DatabaseService::class.java)
+    private val logger = LoggerFactory.getLogger(RagService::class.java)
 
     /**
      * Performs a semantic search against the embeddings table for a given repository.
@@ -107,7 +107,7 @@ class DatabaseService(private val jdbcTemplate: JdbcTemplate) {
             destination => '${tableName}_contents_embeddings',
             embedding => ai.embedding_ollama('nomic-embed-text', 768),
             chunking => ai.chunking_recursive_character_text_splitter('content'),
-            formatting => ai.formatting_python_template('${"\$path, \$file_name, \$content"}')
+            formatting => ai.formatting_python_template('${"\$path, \$file_name, \$chunk"}')
         )
         """.trimIndent()
 

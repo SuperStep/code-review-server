@@ -1,7 +1,7 @@
 package dev.gordeev.review.server.job
 
 import dev.gordeev.review.server.config.RepoIndexerConfig
-import dev.gordeev.review.server.service.database.DatabaseService
+import dev.gordeev.review.server.service.database.RagService
 import dev.gordeev.review.server.service.files.FileExtractorService
 import dev.gordeev.review.server.service.git.GitService
 import org.quartz.Job
@@ -14,7 +14,7 @@ import java.nio.file.Paths
 class RepositoryIndexerJob(
     private val repoIndexerConfig: RepoIndexerConfig,
     private val gitService: GitService,
-    private val databaseService: DatabaseService,
+    private val ragService: RagService,
     private val fileExtractorService: FileExtractorService
 ) : Job {
     override fun execute(context: JobExecutionContext) {
@@ -43,7 +43,7 @@ class RepositoryIndexerJob(
 
                     if (clonedRepoPath != null && clonedRepoPath.exists()) {
 
-                        databaseService.clearTable(repoConfig.name)
+                        ragService.clearTable(repoConfig.name)
 
                         val fileDataList = fileExtractorService.extractDataFromRepository(
                             clonedRepoPath,
@@ -52,7 +52,7 @@ class RepositoryIndexerJob(
                         )
 
                         if (fileDataList.isNotEmpty()) {
-                            databaseService.createTableAndSaveData(repoConfig.name, fileDataList)
+                            ragService.createTableAndSaveData(repoConfig.name, fileDataList)
                             logger.info("Successfully processed and saved data for ${repoConfig.name}")
                         } else {
                             logger.info("No files extracted or suitable for processing in ${repoConfig.name}")
