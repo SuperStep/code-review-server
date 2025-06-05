@@ -8,18 +8,17 @@ import org.quartz.*
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.scheduling.quartz.SchedulerFactoryBean
 
 @Configuration
 class QuartzConfig(
     private val jobProperties: JobProperties
-    ) {
+) {
 
     @Bean
     fun pullRequestFetchJobDetail(): JobDetail {
         return JobBuilder.newJob(PullRequestFetchJob::class.java)
             .withIdentity("pullRequestFetchJob")
-            .requestRecovery(true)
+            .withDescription("Fetches pull requests and queues them for review")
             .storeDurably()
             .build()
     }
@@ -42,6 +41,7 @@ class QuartzConfig(
     fun reviewProcessJobDetail(): JobDetail {
         return JobBuilder.newJob(ReviewProcessJob::class.java)
             .withIdentity("reviewProcessJob")
+            .withDescription("Processes queued pull requests for review")
             .storeDurably()
             .build()
     }
@@ -64,6 +64,7 @@ class QuartzConfig(
     fun reviewResultProcessJobDetail(): JobDetail {
         return JobBuilder.newJob(ReviewResultProcessJob::class.java)
             .withIdentity("reviewResultProcessJob")
+            .withDescription("Processes completed review results and posts comments")
             .storeDurably()
             .build()
     }
@@ -86,6 +87,7 @@ class QuartzConfig(
     fun repositoryIndexerJobDetail(): JobDetail {
         return JobBuilder.newJob(RepositoryIndexerJob::class.java)
             .withIdentity("repositoryIndexerJob")
+            .withDescription("Indexes repositories for RAG processing")
             .storeDurably()
             .build()
     }
@@ -98,7 +100,6 @@ class QuartzConfig(
             .withIdentity("repositoryIndexerTrigger")
             .withSchedule(
                 SimpleScheduleBuilder.simpleSchedule()
-                    // Assuming you will add a 'repositoryIndexer' section to your JobProperties
                     .withIntervalInSeconds(jobProperties.repositoryIndexer.intervalInSeconds)
                     .repeatForever()
             )

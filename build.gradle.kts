@@ -34,6 +34,9 @@ dependencies {
 	// GIT
 	implementation("org.eclipse.jgit:org.eclipse.jgit:6.7.0.202309050840-r")
 
+	// HTML UI
+	implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.9.1")
+	implementation("io.micrometer:micrometer-core")
 
 	implementation("org.springframework.ai:spring-ai-ollama-spring-boot-starter")
 //	implementation("org.springframework.ai:spring-ai-vertex-ai-gemini-spring-boot-starter")
