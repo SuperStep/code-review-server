@@ -13,14 +13,14 @@ spring:
 app:
   jobs:
     pull-request-fetch:
-      enabled: false
+      enabled: true
       interval-in-seconds: 60
       bot-name: '@bot'
     review-process:
-      enabled: false
+      enabled: true
       interval-in-seconds: 10
     review-result-process:
-      enabled: false
+      enabled: true
       interval-in-seconds: 10
     repository-indexer:
       enabled: true
@@ -28,8 +28,8 @@ app:
 
 # AI Provider Configuration
 ai:
-  provider: gemini  # Options: ollama, gemini
-  readTimeoutSec: 60
+  provider: ollama  # Options: ollama, gemini
+  readTimeoutSec: 120
   review:
     prompt:
       template: |
@@ -65,9 +65,9 @@ gemini:
 
 gitea:
   baseUrl: http://localhost:3000
-  token: ffcd50d94a40abd4c2c93a93a65edddfdf462ba1 # gitea_admin:gitea_admin
+  token: 037c312f20f438ab06f55a6259d08c073f816917 # gitea_admin:gitea_admin
   owner: gitea_admin
-  repository: example
+  repository: spring-petclinic
 
 # Git diff configuration
 git:
@@ -76,7 +76,7 @@ git:
 # Indexer Configuration
 indexer:
   repositories:
-    - name: "my-sample-project"
+    - name: "spring-petclinic"
       url: https://github.com/spring-projects/spring-petclinic.git
   clone:
     base-path: /tmp/git
